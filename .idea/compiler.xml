@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="edu-config" />
+        <module name="edu-common" />
+        <module name="edu-eureka" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="edu-ad-api" target="1.8" />
+      <module name="edu-ad-boot" target="1.8" />
+      <module name="edu-ad-impl" target="1.8" />
+      <module name="edu-bom" target="1.8" />
+      <module name="edu-common" target="8" />
+      <module name="edu-config" target="1.8" />
+      <module name="edu-eureka" target="1.8" />
+      <module name="lagou-edu-eureka" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="lagou-edu-eureka" options="" />
+    </option>
+  </component>
+</project>
