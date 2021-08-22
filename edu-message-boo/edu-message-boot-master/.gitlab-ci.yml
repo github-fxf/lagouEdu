@@ -1,0 +1,40 @@
+认准一手: QQ3195303913微信wxywd8
+更多课程: https://www.yuque.com/dangxianyuyudaoniu/kclb/2020
+variables:
+    moduleName: "edu-message-boot"
+    jarPackage: "${moduleName}.jar"
+    targetJarPackage: "target/${moduleName}.jar"
+    targetDir: "/apps/${moduleName}"
+    remoteUser: "root"
+    stopScript: "stop.sh"
+    startScript: "start.sh"
+    mvnPath1: "/apps/apache-maven-3.6.3/repository/com/lagou/edu /root/.m2/repository/com/lagou/edu"
+
+before_script:
+  - pwd
+
+after_script:
+  - pwd
+  - ls `pwd`
+  - id
+  - sudo rm -rf `pwd`
+
+deploy:
+  stage: deploy
+  script:
+    - sudo rm -rf ${mvnPath1}
+    - sudo mvn clean install -Ppro
+    - echo ${targetJarPackage} ${jarPackage}  
+    - targetFile=`find ./ -name "${jarPackage}"|grep ${targetJarPackage}` 
+    - echo ${targetFile}  ${jarPackage}
+    - echo "host:${host}"
+    - ssh -oStrictHostKeyChecking=no ${remoteUser}@${host} "mkdir -p ${targetDir}"
+    - scp -rp -oStrictHostKeyChecking=no  ${stopScript} ${startScript} ${remoteUser}@${host}:${targetDir}
+    - ssh -oStrictHostKeyChecking=no ${remoteUser}@${host} "cd ${targetDir} ; sh ${stopScript} ${jarPackage}"
+    - scp -rp -oStrictHostKeyChecking=no ${targetFile} ${remoteUser}@${host}:${targetDir}
+    - ssh -oStrictHostKeyChecking=no ${remoteUser}@${host} "cd ${targetDir} ; sh ${startScript} ${jarPackage}"
+
+  only:
+    - master
+    
+  when: manual

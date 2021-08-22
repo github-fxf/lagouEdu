@@ -1,0 +1,68 @@
+server:
+  port: 8002
+
+spring:
+  rabbitmq:
+    host: 172.16.86.47
+    port: 5672
+    username: root
+    password: 123456
+  klock:
+    address: 172.16.179.134:6379
+  redis:
+    host: 172.16.179.134
+    port: 6379
+    timeout: 20000
+    pool:
+      max-active: 8
+      min-idle: 0
+      max-idle: 8
+      max-wait: -1
+    password:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.16.86.47:3306/edu_authority?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=GMT
+    username: edurw
+    password: edurw
+  mvc:
+    throw-exception-if-no-handler-found: true
+  #jwt的密钥
+  security:
+    oauth2:
+      jwt:
+        signingKey: 123456
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  hidePackages: com.lagou.edu
+  local:
+    # 短時本地緩存，主要用于要求时效较高的配置
+    default:
+      type: caffeine
+      keyConvertor: fastjson
+      expireAfterWriteInMillis: 60000
+      expireAfterAccessInMillis: 40000
+
+logging:
+  config: classpath:logback.xml

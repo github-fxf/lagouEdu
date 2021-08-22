@@ -1,0 +1,124 @@
+server:
+  port: 9002
+
+spring:
+  rabbitmq:
+    host: 172.16.86.47
+    port: 5672
+    username: root
+    password: 123456
+  klock:
+    address: 172.16.179.134:6379
+  redis:
+    host: 172.16.179.134
+    port: 6379
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 300
+  mvc:
+    throw-exception-if-no-handler-found: true
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+    gateway:
+      routes: # 路由可以有多个
+        - id: edu-front-boot # 我们自定义的路由 ID，保持唯一
+          uri: lb://edu-front-boot
+          predicates:
+            - Path=/front/**
+          filters:
+            - StripPrefix=1
+        - id: edu-boss-boot
+          uri: lb://edu-boss-boot
+          predicates:
+            - Path=/boss/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true # 是否开启，默认为 false 关闭
+          url-expression: "'lb://' + serviceId" # 路由的目标地址的表达式，默认为 "'lb://' + serviceId"
+
+      # 默认过滤器，对应 FilterDefinition 数组
+      default-filters:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            # 允许携带认证信息
+            # 允许跨域的源(网站域名/ip)，设置*为全部
+            # 允许跨域请求里的head字段，设置*为全部
+            # 允许跨域的method， 默认为GET和OPTIONS，设置*为全部
+            # 跨域允许的有效期
+            allow-credentials: true
+            allowed-origins: "*"
+            allowed-headers: "*"
+            allowed-methods: "*"
+            #              - OPTIONS
+            #              - GET
+            #              - POST
+            max-age: 3600
+            # 允许response的head信息
+            # 默认仅允许如下6个：
+            #     Cache-Control
+            #     Content-Language
+            #     Content-Type
+            #     Expires
+            #     Last-Modified
+            #     Pragma
+            #exposed-headers:
+  servlet:
+    multipart:
+      max-request-size: "10MB"
+      max-file-size: "10MB"
+  jackson:
+    time-zone: GMT+8
+  #jwt密码
+  security:
+    oauth2:
+      jwt:
+        signingKey: 123456
+
+jetcache:
+  statIntervalMinutes: 1
+  areaInCacheName: false
+  hidePackages: com.lagou.edu
+  local:
+    # 默认永久本地缓存
+    default:
+      type: caffeine
+      keyConvertor: fastjson
+  remote:
+    # 默认永久的远程缓存
+    default:
+      type: redis
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 172.16.179.134
+      port: 6379
+
+#网关白名单，无需要签权url
+gate:
+  ignore:
+    authentication:
+      startWith: /oauth,/open,/v2/api-docs,/user/login,/course,/ad,/pay,/doc.html,/webjars,/swagger,/pay/wxCallback,/pay/zfbCallback,/user/vfcode,/user/refresh_token,/weixin,/comment,/permission/getUserPermissions
+# 日志配置
+logging:
+  config: classpath:logback.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' # 需要开放的端点。默认值只打开 health 和 info 两个端点。通过设置 * ，可以开放所有端点。
+  endpoint:
+    # Health 端点配置项，对应 HealthProperties 配置类
+    health:
+      enabled: true # 是否开启。默认为 true 开启。
+      show-details: ALWAYS # 何时显示完整的健康信息。默认为 NEVER 都不展示。可选 WHEN_AUTHORIZED 当经过授权的用户；可选 ALWAYS 总是展示。

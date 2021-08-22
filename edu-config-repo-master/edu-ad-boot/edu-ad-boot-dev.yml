@@ -1,0 +1,30 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://113.31.119.154:3306/edu_ad?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=GMT
+    username: edurw
+    password: edurw
+  klock:
+    address: 113.31.105.128:6379
+  rabbitmq:
+    host: 113.31.119.154
+    port: 5672
+    username: root
+    password: 123456
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+#分布式链路追踪--调整SpringBoot日志输出级别
+logging:
+  config: classpath:logback.xml

@@ -1,0 +1,30 @@
+server:
+  port: 8090
+
+spring:
+  data:
+    mongodb:
+      database: edu_comment
+      host: 113.31.105.128
+      port: 27017
+  klock:
+    address: 113.31.105.128:6379
+  rabbitmq:
+    host: 113.31.119.154
+    port: 5672
+    username: root
+    password: 123456
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+#分布式链路追踪--调整SpringBoot日志输出级别
+logging:
+  config: classpath:logback.xml

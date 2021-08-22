@@ -1,0 +1,160 @@
+server:
+  port: 8010
+
+spring:
+  rabbitmq:
+    host: 113.31.119.154
+    port: 5672
+    username: root
+    password: 123456
+  klock:
+    address: 113.31.105.128:6379
+  redis:
+    host: 113.31.105.128
+    port: 6379
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 300
+  mvc:
+    throw-exception-if-no-handler-found: true
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+  servlet:
+    multipart:
+      max-request-size: "10MB"
+      max-file-size: "10MB"
+  jackson:
+    time-zone: GMT+8
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  hidePackages: com.lagou.edu
+  local:
+    # 默认2小时本地缓存
+    default:
+      type: caffeine
+      keyConvertor: fastjson
+      expireAfterWriteInMillis: 3600000
+      expireAfterAccessInMillis: 1800000
+    # 長時本地緩存，主要用于要求时效一般
+    longTime:
+      type: caffeine
+      keyConvertor: fastjson
+      expireAfterWriteInMillis: 300000
+      expireAfterAccessInMillis: 180000
+    # 短時本地緩存，主要用于要求时效较高的配置
+    shortTime:
+      type: caffeine
+      keyConvertor: fastjson
+      expireAfterWriteInMillis: 60000
+      expireAfterAccessInMillis: 40000
+  remote:
+    # 默认2小时的远程缓存
+    default:
+      type: redis
+      expireAfterWriteInMillis: 43200000
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 113.31.105.128
+      port: 6379
+    # 长时远程緩存，主要用于要求时效要求一般的集中式缓存
+    longTime:
+      type: redis
+      expireAfterWriteInMillis: 7200000
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 113.31.105.128
+      port: 6379
+    # 短時远程緩存，主要用于要求时效较高的集中式缓存
+    shortTime:
+      type: redis
+      expireAfterWriteInMillis: 300000
+      keyConvertor: fastjson
+      valueEncoder: kryo
+      valueDecoder: kryo
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 113.31.105.128
+      port: 6379
+
+edu:
+  swagger:
+    # 是否启用
+    enable: true
+    base:
+      # 扫描的包，多个包使用逗号隔开
+      package: com.lagou.edu
+    contact:
+      email: leo@lagou.com
+      name: leo
+      url: http://eduboss.lagou.com
+    description:
+    title: edu-boss-boot API Documents
+    url: http://eduboss.lagou.com
+    version: 0.0.1
+    groupName: edu-boss-boot
+    # 自定义参数配置，可配置N个
+    parameter-config:
+      - name: Authorization
+        description: 公共参数, access_token
+        # header, cookie, body, query
+        type: header
+        data-type: String
+        required: false
+        # 测试接口时，自动填充token的值
+        default-value: "access_token"
+
+# knife4j配置
+knife4j:
+  enable: ${edu.swagger.enable}
+  basic:
+    enable: false
+    username: admin
+    password: admin
+
+rocketmq:
+  name-server: 113.31.105.128:9876
+  producer:
+    group: edu_group
+  consumer:
+    group: edu_group
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+#分布式链路追踪--调整SpringBoot日志输出级别
+logging:
+  config: classpath:logback.xml
+
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

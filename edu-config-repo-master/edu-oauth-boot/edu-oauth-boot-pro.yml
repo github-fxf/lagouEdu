@@ -1,0 +1,65 @@
+server:
+  port: 8000
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.16.86.47:3306/edu_oauth?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: edurw
+    password: edurw
+  security:
+    oauth2:
+      jwt:
+        signingKey: 123456
+  klock:
+    address: 172.16.179.134:6379
+  rabbitmq:
+    host: 172.16.86.47
+    port: 5672
+    username: root
+    password: 123456
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+
+gate:
+  ignore:
+    authentication:
+      startWith: /oauth,/open
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+#分布式链路追踪--调整SpringBoot日志输出级别
+logging:
+  config: classpath:logback.xml
+
+feign:
+  sentinel:
+    enabled: true
+  okhttp:
+    enabled: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+jetcache:
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  hidePackages: com.lagou.edu
+  local:
+    # 短時本地緩存，主要用于要求时效较高的配置
+    default:
+      type: caffeine
+      keyConvertor: fastjson
+      expireAfterWriteInMillis: 60000
+      expireAfterAccessInMillis: 40000

@@ -1,0 +1,59 @@
+server:
+  port: 8180
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.16.86.47:3306/edu_course?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: edurw
+    password: edurw
+  rabbitmq:
+    host: 172.16.86.47
+    port: 5672
+    username: root
+    password: 123456
+  klock:
+    address: 172.16.179.134:6379
+  redis:
+    host: 172.16.179.134
+    port: 6379
+    timeout: 20000
+    pool:
+      max-active: 8
+      min-idle: 0
+      max-idle: 8
+      max-wait: -1
+    password:
+rocketmq:
+  name-server: 172.16.179.134:9876
+  producer:
+    group: edu_group
+  consumer:
+    group: edu_group
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    #启用shutdown端点，以便支持优雅停机
+    shutdown:
+      enabled: true
+
+#分布式链路追踪--调整SpringBoot日志输出级别
+logging:
+  config: classpath:logback.xml
+
+xxl:
+  job:
+    accessToken: ''
+    admin:
+      addresses: http://172.16.181.31:18899/xxl-job-admin
+    executor:
+      address: ''
+      appname: edu-course-boot
+      ip: ''
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+      port: 19999
